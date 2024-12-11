@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: foyer
+    ports:
+      - "3306:3306"
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "mysqldb" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.2  # Nouvelle adresse IP pour éviter le conflit
+
+  app:
+    depends_on:
+      - mysqldb
+    image: kenzakhalfaoui/eventsproject:latest  # Votre nom d'image
+    build: .  # Assurez-vous que le Dockerfile est dans ce répertoire
+    restart: on-failure
+    ports:
+      - "8089:8089"
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.3  # Nouvelle adresse IP pour éviter le conflit
+
+volumes:
+  db:
+
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/16  # Nouvelle plage de sous-réseau
