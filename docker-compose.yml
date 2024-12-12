@@ -18,7 +18,7 @@ services:
       retries: 5
     networks:
       mynetwork:
-        ipv4_address: 172.19.0.3 # Nouvelle adresse IP pour éviter le conflit
+        ipv4_address: 172.19.0.4 # Nouvelle adresse IP pour éviter le conflit
 
   app:
     depends_on:
@@ -34,7 +34,7 @@ services:
     tty: true
     networks:
       mynetwork:
-        ipv4_address: 172.19.0.3  # Nouvelle adresse IP pour éviter le conflit
+        ipv4_address: 172.19.0.5 # Nouvelle adresse IP pour éviter le conflit
 
 volumes:
   db:
@@ -45,4 +45,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.19.0.0/17 # Nouvelle plage de sous-réseau
+        - subnet: 172.19.0.0/16 # Nouvelle plage de sous-réseau
